@@ -15,6 +15,8 @@ namespace IntelliSenseTextBox
         public Form1()
         {
             InitializeComponent();
+            var items = txtSuggestions.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            intelliSenseTextBox1.IntelliSenseItems = items.ToList();  
         }
     }
 }
