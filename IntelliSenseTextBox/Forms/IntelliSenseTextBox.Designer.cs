@@ -36,7 +36,7 @@
             this.lbxSuggestions.FormattingEnabled = true;
             this.lbxSuggestions.Location = new System.Drawing.Point(0, 0);
             this.lbxSuggestions.Name = "lbxSuggestions";
-            this.lbxSuggestions.Size = new System.Drawing.Size(120, 96);
+            this.lbxSuggestions.Size = new System.Drawing.Size(120, 200);
             this.lbxSuggestions.TabIndex = 0;
             this.lbxSuggestions.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbxSuggestions_KeyDown);
             // 

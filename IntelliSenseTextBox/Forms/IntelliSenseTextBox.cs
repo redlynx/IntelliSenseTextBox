@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,26 +15,27 @@ namespace IntelliSenseTextBox.Forms
     {
 
         public List<string> IntelliSenseItems { get; set; }
-        public List<IntelliSenseItem> IntelliSenseItems2 { get; set; } = new List<IntelliSenseItem>();
+        public int MaxListBoxHeight { get; set; } = 200;
 
         public IntelliSenseTextBox()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         protected override void OnPaint(PaintEventArgs pe)
         {
             base.OnPaint(pe);
         }
+        
 
-
-        // this is responsible for hiding and showing the listbox underneath the textbox
+        // this is responsible for populating, hiding, and showing the listbox underneath the textbox
         // the listbox will contain a subset of possible matches
         private void IntelliSenseTextBox_TextChanged(object sender, EventArgs e)
         {
             // subset the items
             string lastWord = GetLastWord().ToLower();
-            var subset = IntelliSenseItems.Where(x => x.ToLower().StartsWith(lastWord));
+            var subset = IntelliSenseItems.Where(x => x.ToLower().Contains(lastWord));
+
             if (subset.Count() == 0 || lastWord.Length == 0)
             {
                 lbxSuggestions.Hide();
@@ -47,6 +49,13 @@ namespace IntelliSenseTextBox.Forms
                 lbxSuggestions.Location = pt;
                 lbxSuggestions.Top += this.Height - 1;
                 this.Parent.Controls.Add(lbxSuggestions);
+                // can we reduce its size?
+                lbxSuggestions.Height = MaxListBoxHeight;
+                var reqHeight = lbxSuggestions.ItemHeight * lbxSuggestions.Items.Count;
+                if (reqHeight < MaxListBoxHeight)
+                {
+                    lbxSuggestions.Height = reqHeight + lbxSuggestions.ItemHeight;
+                }
                 lbxSuggestions.Show();
                 lbxSuggestions.BringToFront();
             }
@@ -106,7 +115,9 @@ namespace IntelliSenseTextBox.Forms
         private string GetLastWord()
         {
             // gets the last word, separated by blanks
-            var s = Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            //var s = Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var s = Regex.Split(Text, @"[^a-zA-Z0-9_'\{]");
+            //var s = Regex.Split(Text, @"[^\w{1,}]");
             if (s.Length > 0 && !Text.EndsWith(" "))
             {
                 return s.Last();
@@ -128,6 +139,33 @@ namespace IntelliSenseTextBox.Forms
         public Icon Icon { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+
+        public IntelliSenseItem(string Name)
+        {
+            this.Icon = SystemIcons.Shield;
+            this.Name = Name;
+            this.Description = Name;
+        }
+
+        public IntelliSenseItem(string Name, string Description)
+        {
+            this.Icon = SystemIcons.Shield;
+            this.Name = Name;
+            this.Description = Description;
+        }
+
+        public IntelliSenseItem(Icon Icon, string Name, string Description)
+        {
+            this.Icon = Icon;
+            this.Name = Name;
+            this.Description = Description;
+        }
+
+        public override string ToString()
+        {
+
+            return $"{Name}";
+        }
 
     }
 

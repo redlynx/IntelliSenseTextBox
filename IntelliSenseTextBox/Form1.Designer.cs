@@ -48,7 +48,8 @@
             this.txtSuggestions.Name = "txtSuggestions";
             this.txtSuggestions.Size = new System.Drawing.Size(437, 89);
             this.txtSuggestions.TabIndex = 3;
-            this.txtSuggestions.Text = "Apple\r\nBanana\r\nBlueberries\r\nCoconut\r\nLemon\r\nMango\r\nMandarin\r\nMelon";
+            this.txtSuggestions.Text = "Apple\r\nBanana\r\nBlueberries\r\nCoconut\r\nLemon\r\nMango\r\nMandarin\r\nMelon\r\n{$UserName}\r\n" +
+    "{InvoiceNumber}\r\n{InvoiceDate}\r\n{OrderNumber}\r\n{TotalAmount}\r\n{$StationId}";
             this.txtSuggestions.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // Form1
