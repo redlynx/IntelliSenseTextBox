@@ -42,28 +42,28 @@ namespace IntelliSenseTextBox.Forms
             else if (subset.Count() > 0)
             {
                 FillSuggestions(subset);
+
                 // make sure to be on top and appear on the caret position
                 Point pt = GetPositionFromCharIndex(SelectionStart > 0 ? SelectionStart - 1 : 0);
                 pt.Y += this.Location.Y;
-                
                 // multi-line textboxes behave differently
                 if (this.Multiline)
                 {
                     pt.Y -= this.Height - this.FontHeight - 5;
-
                 }
-
                 lbxSuggestions.Location = pt;
+                // get rid of the top border (i.e. overlap with textbox bottom border)
                 lbxSuggestions.Top += this.Height - 1;
-
                 this.Parent.Controls.Add(lbxSuggestions);
-                // can we reduce its size?
+                
+                // avoid scrolling - resize listbox
                 lbxSuggestions.Height = MaxListBoxHeight;
                 var reqHeight = lbxSuggestions.ItemHeight * lbxSuggestions.Items.Count;
                 if (reqHeight < MaxListBoxHeight)
                 {
                     lbxSuggestions.Height = reqHeight + lbxSuggestions.ItemHeight;
                 }
+
                 lbxSuggestions.Show();
                 lbxSuggestions.BringToFront();
             }
