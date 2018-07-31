@@ -13,8 +13,7 @@ namespace IntelliSenseTextBox.Forms
 {
     public partial class IntelliSenseTextBox : TextBox
     {
-
-        public List<string> IntelliSenseItems { get; set; }
+        public List<string> IntelliSenseItems { get; set; } = new List<string>();
         public int MaxListBoxHeight { get; set; } = 200;
 
         public IntelliSenseTextBox()
@@ -45,9 +44,18 @@ namespace IntelliSenseTextBox.Forms
                 FillSuggestions(subset);
                 // make sure to be on top and appear on the caret position
                 Point pt = GetPositionFromCharIndex(SelectionStart > 0 ? SelectionStart - 1 : 0);
-                pt.Y = Top;
+                pt.Y += this.Location.Y;
+                
+                // multi-line textboxes behave differently
+                if (this.Multiline)
+                {
+                    pt.Y -= this.Height - this.FontHeight - 5;
+
+                }
+
                 lbxSuggestions.Location = pt;
                 lbxSuggestions.Top += this.Height - 1;
+
                 this.Parent.Controls.Add(lbxSuggestions);
                 // can we reduce its size?
                 lbxSuggestions.Height = MaxListBoxHeight;
@@ -70,7 +78,7 @@ namespace IntelliSenseTextBox.Forms
         {
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Down)
             {
-                if (lbxSuggestions.Visible)
+                if (lbxSuggestions.Visible && lbxSuggestions.Items.Count > 0)
                 {
                     lbxSuggestions.Focus();
                     lbxSuggestions.SelectedItem = lbxSuggestions.Items[0];
@@ -96,6 +104,7 @@ namespace IntelliSenseTextBox.Forms
                 ReplaceLastWord(lbxSuggestions.SelectedItem.ToString());
                 lbxSuggestions.Hide();
                 SelectionStart = Text.Length;
+                this.Focus();
             }
             else if (e.KeyCode == Keys.Escape)
             {
@@ -133,41 +142,4 @@ namespace IntelliSenseTextBox.Forms
             Text += s;
         }
     }
-
-    public class IntelliSenseItem
-    {
-        public Icon Icon { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-
-        public IntelliSenseItem(string Name)
-        {
-            this.Icon = SystemIcons.Shield;
-            this.Name = Name;
-            this.Description = Name;
-        }
-
-        public IntelliSenseItem(string Name, string Description)
-        {
-            this.Icon = SystemIcons.Shield;
-            this.Name = Name;
-            this.Description = Description;
-        }
-
-        public IntelliSenseItem(Icon Icon, string Name, string Description)
-        {
-            this.Icon = Icon;
-            this.Name = Name;
-            this.Description = Description;
-        }
-
-        public override string ToString()
-        {
-
-            return $"{Name}";
-        }
-
-    }
-
-
 }
