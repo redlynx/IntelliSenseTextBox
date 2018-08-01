@@ -16,27 +16,28 @@ namespace IntelliSenseTextBox.Forms
         public List<string> IntelliSenseItems { get; set; } = new List<string>();
         public int MaxListBoxHeight { get; set; } = 200;
 
+
         public IntelliSenseTextBox()
         {
             InitializeComponent();            
         }
 
+
         protected override void OnPaint(PaintEventArgs pe)
         {
             base.OnPaint(pe);
         }
-        
+
 
         // this is responsible for populating, hiding, and showing the listbox underneath the textbox
         // the listbox will contain a subset of possible matches
         private void IntelliSenseTextBox_TextChanged(object sender, EventArgs e)
         {
-            // subset the items
-            string lastWord = GetLastWord().ToLower();
-            if (lastWord.Length == 0 || IntelliSenseItems == null) return;
-            var subset = IntelliSenseItems.Where(x => x.ToLower().Contains(lastWord));
+            string w = GetWordAtPosition().ToLower();
+            if (w.Length == 0 || IntelliSenseItems == null) return;
+            var subset = IntelliSenseItems.Where(x => x.ToLower().Contains(w));
 
-            if (subset.Count() == 0 || lastWord.Length == 0)
+            if (subset.Count() == 0 || w.Length == 0)
             {
                 lbxSuggestions.Hide();
             }
@@ -103,9 +104,8 @@ namespace IntelliSenseTextBox.Forms
         {
             if (e.KeyCode == Keys.Enter && lbxSuggestions.SelectedItem != null)
             {
-                ReplaceLastWord(lbxSuggestions.SelectedItem.ToString());
+                InsertWordAtPosition(lbxSuggestions.SelectedItem.ToString());
                 lbxSuggestions.Hide();
-                SelectionStart = Text.Length;
                 this.Focus();
             }
             else if (e.KeyCode == Keys.Escape)
@@ -123,12 +123,11 @@ namespace IntelliSenseTextBox.Forms
         }
 
 
-        private string GetLastWord()
+        private string GetWordAtPosition()
         {
-            // gets the last word, separated by blanks
-            //var s = Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            var s = Regex.Split(Text, @"[^a-zA-Z0-9_'\{]");
-            //var s = Regex.Split(Text, @"[^\w{1,}]");
+            int pos = this.SelectionStart;
+            var textPart = this.Text.Substring(0, pos);
+            var s = Regex.Split(textPart, @"[^a-zA-Z0-9_'\{]");
             if (s.Length > 0 && !Text.EndsWith(" "))
             {
                 return s.Last();
@@ -137,11 +136,14 @@ namespace IntelliSenseTextBox.Forms
         }
 
 
-        private void ReplaceLastWord(string s)
+        private void InsertWordAtPosition(string s)
         {
-            int i = Text.LastIndexOf(GetLastWord());
-            Text = Text.Remove(i);
-            Text += s;
+            string w = GetWordAtPosition();
+            int i = Text.LastIndexOf(w);
+            Text = Text.Remove(i, w.Length);
+            Text = Text.Insert(i, s);
+            // position the cursor right after the word
+            this.SelectionStart = i + s.Length;
         }
     }
 }
