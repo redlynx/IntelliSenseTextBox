@@ -21,6 +21,7 @@ namespace IntelliSenseTextBox
             // single-line textbox
             intelliSenseTextBox1.IntelliSenseItems = sorted;
             intelliSenseTextBox3.IntelliSenseItems = sorted;
+            intelliSenseTextBox4.IntelliSenseItems = sorted;
             // multi-line textbox
             intelliSenseTextBox2.IntelliSenseItems = sorted;
         }

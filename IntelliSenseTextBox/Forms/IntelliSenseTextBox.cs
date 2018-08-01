@@ -33,6 +33,7 @@ namespace IntelliSenseTextBox.Forms
         {
             // subset the items
             string lastWord = GetLastWord().ToLower();
+            if (lastWord.Length == 0 || IntelliSenseItems == null) return;
             var subset = IntelliSenseItems.Where(x => x.ToLower().Contains(lastWord));
 
             if (subset.Count() == 0 || lastWord.Length == 0)
@@ -46,6 +47,7 @@ namespace IntelliSenseTextBox.Forms
                 // make sure to be on top and appear on the caret position
                 Point pt = GetPositionFromCharIndex(SelectionStart > 0 ? SelectionStart - 1 : 0);
                 pt.Y += this.Location.Y;
+                pt.X += this.Left;
                 // multi-line textboxes behave differently
                 if (this.Multiline)
                 {
