@@ -139,11 +139,11 @@ namespace IntelliSenseTextBox.Forms
         private void InsertWordAtPosition(string s)
         {
             string w = GetWordAtPosition();
-            int i = Text.LastIndexOf(w);
+            int i = this.SelectionStart;
             Text = Text.Remove(i, w.Length);
-            Text = Text.Insert(i, s);
+            Text = Text.Insert(i - w.Length, s);
             // position the cursor right after the word
-            this.SelectionStart = i + s.Length;
+            this.SelectionStart = i - w.Length + s.Length;
         }
     }
 }
