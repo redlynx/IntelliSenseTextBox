@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,9 @@ namespace IntelliSenseTextBox
         public Form1()
         {
             InitializeComponent();
-            var items = txtSuggestions.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            //var items = txtSuggestions.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var text = File.ReadAllText(@"..\..\Samples\1.txt");
+            var items = text.Split().Distinct();
             var sorted = items.ToList();
             sorted.Sort();
             // single-line textbox
